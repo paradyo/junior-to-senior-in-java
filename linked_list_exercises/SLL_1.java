@@ -1,36 +1,45 @@
 package linked_list_exercises;
 
-public class SingleLinkedList {
-    private int size;
-    private Node head;
-    private Node tail;
-    public int getSize() {
-        return size;
-    }
-    public SingleLinkedList() {
+public class SLL_1 {
+    int size;
+    Node head;
+    Node tail;
+    public SLL_1() {
         this.size = 0;
     }
     public void display(){
-        Node node = head;
-        System.out.print("START ");
-        while (node != null){
-            System.out.print(node.value + " -> ");
-            node = node.next;
+        Node temp = head;
+        if (size == 0){
+            System.out.println("SLL is null.");
+            return;
         }
-        System.out.println("END" + " | HEAD: " + head.value + " | TAIL: " + tail.value + " | SIZE: " + size);
+        while (temp != null){
+            System.out.print(temp.value + " -> ");
+            temp = temp.next;
+        }
+        System.out.print("null");
+        System.out.print("\tSize: " + size);
+        System.out.print("\tHead: " + head.value);
+        System.out.print("\tTail: " + tail.value);
+        System.out.println("");
     }
+
     public void insertFirst(int value){
         Node node = new Node(value);
+        if(size == 0){
+            head = node;
+            tail = node;
+            size++;
+            return;
+        }
         node.next = head;
         head = node;
-        if(tail == null){
-            tail = head;
-        }
         size++;
     }
+
     public void insertLast(int value){
         Node node = new Node(value);
-        if(tail == null){
+        if(size == 0){
             insertFirst(value);
             return;
         }
@@ -38,6 +47,8 @@ public class SingleLinkedList {
         tail = node;
         size++;
     }
+
+    //important
     public void insert(int value, int index){
         if(index == 0){
             insertFirst(value);
@@ -48,25 +59,28 @@ public class SingleLinkedList {
             return;
         }
         Node temp = head;
-        for (int i = 1; i < index; i++) {
+        for (int i = 1; i < index; i++){
             temp = temp.next;
         }
-        Node node = new Node(value, temp.next);
-        temp.next = node;
+        temp.next = new Node(value, temp.next);
         size++;
     }
-    private Node insertRecursive(int value, int index, Node node){
+
+    //important
+    private Node insertRecursive(Node node, int value, int index){
         if(index == 0){
             Node newNode = new Node(value, node);
             size++;
             return newNode;
         }
-        node.next = insertRecursive(value, index-1, node.next);
+        node.next = insertRecursive(node.next, value, index - 1);
         return node;
     }
+    //important
     public void insertRecursive(int value, int index){
-        head = insertRecursive(value, index, head);
+        head = insertRecursive(head, value, index);
     }
+
     public void deleteFirst(){
         head = head.next;
         if(head == null){
@@ -74,17 +88,17 @@ public class SingleLinkedList {
         }
         size--;
     }
+
     public void deleteLast(){
         if(size <= 1){
             deleteFirst();
             return;
         }
         Node temp = head;
-        for (int i = 1; i < size; i++) {
+        for (int i = 1; i < size; i++){
             if(temp.next.next == null){
                 break;
-            }
-            else{
+            }else {
                 temp = temp.next;
             }
         }
@@ -92,7 +106,12 @@ public class SingleLinkedList {
         tail.next = null;
         size--;
     }
+
+    //important
     public void delete(int index){
+        if(index == -1){
+            return;
+        }
         if(index == 0){
             deleteFirst();
             return;
@@ -102,8 +121,8 @@ public class SingleLinkedList {
             return;
         }
         Node temp = head;
-        for (int i = 1; i < index; i++){
-            if(i == index - 1 && temp.next != null){
+        for (int i = 1; i < size; i++){
+            if(i == index && temp.next != null){
                 temp.next = temp.next.next;
                 break;
             }
@@ -111,27 +130,32 @@ public class SingleLinkedList {
         }
         size--;
     }
+
     public Node findByValue(int value){
-        Node node = head;
-        while (node != null){
-            if(node.value == value){
-                return node;
+        Node temp = head;
+        while (temp != null){
+            if(temp.value == value){
+                return temp;
             }
-            node = node.next;
+            temp = temp.next;
         }
         return null;
     }
-    public Node findByIndex(int index){
-        Node node = head;
-        int counter = 1;
-        while (counter != size){
-            if(node != null && index == counter - 1){
-                return node;
+
+    public int findIndexByValue(int value){
+        Node temp = head;
+        int index = 0;
+        while (temp != null){
+            if(temp.value == value){
+                return index;
             }
-            counter++;
+            index++;
+            temp = temp.next;
         }
-        return null;
+        return -1;
     }
+
+    //important
     public void reverse(){
         if(size < 2){
             return;
@@ -150,25 +174,28 @@ public class SingleLinkedList {
         }
         head = prev;
     }
-    private void reverseRecursive(Node node){
+
+    private void reverseRecursion(Node node){
         if (node == tail) {
             head = tail;
             return;
         }
-        reverseRecursive(node.next);
+        reverseRecursion(node.next);
         tail.next = node;
         tail = node;
         tail.next = null;
     }
-    public void reverseRecursive(){
-        reverseRecursive(head);
+    //important
+    public void reverseRecursion(){
+        reverseRecursion(head);
     }
-    private static class Node{
-        private int value;
-        private Node next;
 
+    private static class Node{
+        int value;
+        Node next;
         public Node(int value) {
             this.value = value;
+            this.next = null;
         }
 
         public Node(int value, Node next) {
